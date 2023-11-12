@@ -15,18 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConnectService = void 0;
 const mssql_1 = __importDefault(require("mssql"));
 const dbConfig_1 = require("../config/dbConfig");
-// export const dbConnectionService =async()=>{
-//     try{
-//         let pool=await mssql.connect(dbConfig);
-//         if(pool.connected){
-//             console.log("db is connected ")
-//         }
-//         return pool
-//     }
-//     catch(error){
-//         console.log("Error in Database connection ",error)
-//     }
-// }
 function dbConnectService() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
