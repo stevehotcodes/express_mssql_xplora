@@ -10,7 +10,7 @@ app.use((req:Request,res:Response)=>{
     res.send({"hello":"greetings"})
 
 })
-dbConnectService()
+
 
 
 app.listen(port,()=>{
