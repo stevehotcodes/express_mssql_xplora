@@ -29,6 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const usersRoutes_1 = __importDefault(require("./routes/usersRoutes"));
 const cors_1 = __importDefault(require("cors"));
+const toursRoutes_1 = __importDefault(require("./routes/toursRoutes"));
 const app = (0, express_1.default)();
 app.use((0, express_1.json)());
 app.use((0, cors_1.default)());
@@ -37,6 +38,7 @@ const port = 3400;
 //     res.send({"hello":"greetings"})
 // })
 app.use('/users', usersRoutes_1.default);
+app.use('/tours', toursRoutes_1.default);
 app.listen(port, () => {
     console.log("I am runnning on this port ------------", port);
 });

@@ -12,10 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerNewUser = void 0;
+exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const dbConnection = dbConnectionHelper_1.default.getInstance();
 const registerNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -35,3 +38,32 @@ const registerNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.registerNewUser = registerNewUser;
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { email, password } = req.body;
+        //fetch the deatils of the user 
+        let user = (yield dbConnection.exec('getUserByEmail', { email })).recordset[0];
+        if (!user) {
+            return res.status(404).json({ message: "user does not exist please signup" });
+        }
+        if (user.email == email) {
+            const passwordDb = yield bcrypt_1.default.compare(password, user.password);
+            console.log(passwordDb, user.email, password, user.password);
+            if (!passwordDb) {
+                return res.status(401).json("Incorrect credential for the user");
+            }
+            const userPayload = { 'id': user.id, 'fullname': user.fullName, 'email': user.email, 'role': user.role };
+            const token = jsonwebtoken_1.default.sign(userPayload, process.env.SECRET, {
+                expiresIn: '36000s'
+            });
+            return res.status(200).json({
+                message: "Logged in successfully", token,
+                role: user.role
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+exports.loginUser = loginUser;
