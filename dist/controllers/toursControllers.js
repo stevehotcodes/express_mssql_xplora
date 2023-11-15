@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllTours = exports.createNewTour = void 0;
+exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const db = dbConnectionHelper_1.default.getInstance();
@@ -46,3 +46,15 @@ const getAllTours = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getAllTours = getAllTours;
+const deleteTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { id } = req.params;
+        yield db.exec('deleteEvent', { id });
+        console.log("delete successfully");
+        return res.status(201).json({ message: "tour successfully deleted" });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+exports.deleteTour = deleteTour;

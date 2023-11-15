@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const userControllers_1 = require("../controllers/userControllers");
 const userRoutes = (0, express_1.Router)();
+userRoutes.get("/all", userControllers_1.getAllUsers);
 userRoutes.post('/signup', userControllers_1.registerNewUser);
 userRoutes.post('/signin', userControllers_1.loginUser);
+userRoutes.delete('/users/:id', userControllers_1.deleteUser);
 exports.default = userRoutes;

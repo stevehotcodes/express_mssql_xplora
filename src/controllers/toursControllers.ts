@@ -62,3 +62,19 @@ export const getAllTours =async(req:Request,res:Response)=>{
         
     }
 }
+
+export const deleteTour=async (req:Request,res:Response)=>{
+    try {
+
+        let {id}=req.params
+        await db.exec('deleteEvent',{id})
+        console.log("delete successfully");
+
+        return res.status(201).json({message:"tour successfully deleted"});
+
+        
+    } catch (error:any) {
+        return res.status(500).json({message:error.message})
+    }
+
+}

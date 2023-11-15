@@ -84,4 +84,28 @@ export const loginUser =async (req:Request,res:Response)=>{
     }
 }
 
+export const deleteUser =async (req:Request,res:Response)=>{
+    try {
+        
+        let {id}=req.params
+        let result=await dbConnection.exec('deleteUser',{id});
+        return res.status(201).json({message:"deleted successfully",result})
+        
+    } catch (error:any) {
+        return res.status(500).json({message:error.message})
+        
+    }
+}
 
+export const getAllUsers=async (req:Request,res:Response) => {
+    try {
+        
+         let users:IUser[]=(await dbConnection.exec('getAllUsers')).recordset;
+         if(!users){return res.status(404).json({message:"users not found"})};
+         console.log(users)
+         return res.status(200).json(users)
+    } catch (error:any) {
+        return res.status(500).json({message:"error in fetching users",error:error.message})
+    }
+    
+}

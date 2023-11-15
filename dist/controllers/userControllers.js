@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.registerNewUser = void 0;
+exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -67,3 +67,29 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.loginUser = loginUser;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { id } = req.params;
+        let result = yield dbConnection.exec('deleteUser', { id });
+        return res.status(201).json({ message: "deleted successfully", result });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+exports.deleteUser = deleteUser;
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let users = (yield dbConnection.exec('getAllUsers')).recordset;
+        if (!users) {
+            return res.status(404).json({ message: "users not found" });
+        }
+        ;
+        console.log(users);
+        return res.status(200).json(users);
+    }
+    catch (error) {
+        return res.status(500).json({ message: "error in fetching users", error: error.message });
+    }
+});
+exports.getAllUsers = getAllUsers;

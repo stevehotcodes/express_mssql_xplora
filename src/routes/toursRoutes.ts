@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { createNewTour, getAllTours } from "../controllers/toursControllers";
+import { createNewTour, deleteTour, getAllTours } from "../controllers/toursControllers";
 
 
 
 const toursRoutes=Router()
+toursRoutes.get('/all',getAllTours)
 
 toursRoutes.post('/create',createNewTour);
-toursRoutes.get('/all',getAllTours)
+
+toursRoutes.delete('/tours/:id', deleteTour);
+
 
 
 
