@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
+exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -93,3 +93,17 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getAllUsers = getAllUsers;
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { id } = req.params;
+        let user = yield (yield dbConnection.exec('getUserById', { id })).recordset[0];
+        if (!user) {
+            return res.status(404).json({ message: "no user found with the id " });
+        }
+        return res.status(200).json(user);
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+exports.getUserById = getUserById;

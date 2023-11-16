@@ -109,3 +109,18 @@ export const getAllUsers=async (req:Request,res:Response) => {
     }
     
 }
+
+export const getUserById=async(req:Request,res:Response)=>{
+    try {
+
+        let{id}=req.params
+        let user:IUser=await (await dbConnection.exec('getUserById', { id })).recordset[0];
+        if(!user){return  res.status(404).json({message:"no user found with the id "})}
+        return res.status(200).json(user)
+        
+    } catch (error:any) {
+        
+        return res.status(500).json({message:error.message})
+        
+    }
+}
