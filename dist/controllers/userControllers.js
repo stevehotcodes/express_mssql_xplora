@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
+exports.checkUserDetails = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -58,7 +58,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             return res.status(200).json({
                 message: "Logged in successfully", token,
-                role: user.role
+                role: user.role,
+                id: user.id
             });
         }
     }
@@ -107,3 +108,11 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserById = getUserById;
+const checkUserDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.info) {
+        return res.json({
+            info: req.info
+        });
+    }
+});
+exports.checkUserDetails = checkUserDetails;

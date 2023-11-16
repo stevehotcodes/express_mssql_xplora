@@ -4,6 +4,7 @@ import { dbConnectService } from "../services/dbConnectionServices";
 import sql from 'mssql'
 import {v4 as uuid} from 'uuid'
 import { dbConfig } from "../config/dbConfig";
+import { IExtendedUserRequest } from "../types/interfaces";
 
 
 export interface IEvent{
@@ -31,11 +32,11 @@ export const createNewTour=async(req:Request,res:Response)=>{
     try {
         let id=uuid();
     
-        let {title,tourType,destination,price,availableDate,image}=req.body;
+        let {title,tourType,destination,price,availableDate,image,duration}=req.body;
         availableDate=new Date()
         availableDate= availableDate.toJSON()
         
-        let data={id,title,tourType,destination,price,availableDate,image}
+        let data={id,title,tourType,destination,price,availableDate,image,duration}
 
         await db.exec('createNewTour',data);
         return res.status(201).json({message:`Tour created has been registered successfully. The ID is ${id}`})
@@ -77,4 +78,40 @@ export const deleteTour=async (req:Request,res:Response)=>{
         return res.status(500).json({message:error.message})
     }
 
+}
+
+export const updateTourToBooked=async(req:IExtendedUserRequest,res:Response)=>{
+    try 
+    {
+              
+        // let userID=req.info?.id! as string
+        let{id,userID}=req.params
+        let result =await db.exec("updateTourToBooked",{id,userID});
+        console.log("userId",userID)
+        return res.status(200).json({message:"tour booked successfully",result})
+
+    } 
+    catch (error:any) 
+    {
+        return res.status(500).json({message:"booking unsuccessful",error})
+        
+    }
+
+}
+
+export const getToursByUser=async(req:Request,res:Response)=>{
+    try
+     {
+        let{userID}=req.params
+        let events=(await db.exec('getBookedToursByUser',{userID})).recordset
+        // console.log(events)
+        if(!events){return res.status(404).json({message:"no events found by the user"})}
+        return res.status(200).json(events)
+    } 
+    catch (error:any) 
+    {
+        console.log(error)
+        return res.status(500).json({message:"error in fetching tours of the user",error})
+        
+    }
 }

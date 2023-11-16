@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
+exports.getToursByUser = exports.updateTourToBooked = exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const db = dbConnectionHelper_1.default.getInstance();
 const createNewTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let id = (0, uuid_1.v4)();
-        let { title, tourType, destination, price, availableDate, image } = req.body;
+        let { title, tourType, destination, price, availableDate, image, duration } = req.body;
         availableDate = new Date();
         availableDate = availableDate.toJSON();
-        let data = { id, title, tourType, destination, price, availableDate, image };
+        let data = { id, title, tourType, destination, price, availableDate, image, duration };
         yield db.exec('createNewTour', data);
         return res.status(201).json({ message: `Tour created has been registered successfully. The ID is ${id}` });
     }
@@ -58,3 +58,32 @@ const deleteTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteTour = deleteTour;
+const updateTourToBooked = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // let userID=req.info?.id! as string
+        let { id, userID } = req.params;
+        let result = yield db.exec("updateTourToBooked", { id, userID });
+        console.log("userId", userID);
+        return res.status(200).json({ message: "tour booked successfully", result });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "booking unsuccessful", error });
+    }
+});
+exports.updateTourToBooked = updateTourToBooked;
+const getToursByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { userID } = req.params;
+        let events = (yield db.exec('getBookedToursByUser', { userID })).recordset;
+        // console.log(events)
+        if (!events) {
+            return res.status(404).json({ message: "no events found by the user" });
+        }
+        return res.status(200).json(events);
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "error in fetching tours of the user", error });
+    }
+});
+exports.getToursByUser = getToursByUser;

@@ -5,6 +5,7 @@ import { registrationSchema } from "../helpers/validators";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { IExtendedUserRequest } from "../types/interfaces";
 dotenv.config()
 
 
@@ -73,7 +74,8 @@ export const loginUser =async (req:Request,res:Response)=>{
             })
             return res.status(200).json({
                 message: "Logged in successfully", token,
-                role:user.role
+                role:user.role,
+                id:user.id
             })
          }
        
@@ -123,4 +125,14 @@ export const getUserById=async(req:Request,res:Response)=>{
         return res.status(500).json({message:error.message})
         
     }
+}
+export const checkUserDetails = async (req:IExtendedUserRequest, res:Response)=>{
+    
+    if(req.info){
+
+        return res.json({
+            info: req.info 
+        }) 
+    }
+    
 }

@@ -5,5 +5,7 @@ const toursControllers_1 = require("../controllers/toursControllers");
 const toursRoutes = (0, express_1.Router)();
 toursRoutes.get('/all', toursControllers_1.getAllTours);
 toursRoutes.post('/create', toursControllers_1.createNewTour);
+toursRoutes.get('/user/:userID', toursControllers_1.getToursByUser);
 toursRoutes.delete('/tours/:id', toursControllers_1.deleteTour);
+toursRoutes.post("/book/:id/:userID", toursControllers_1.updateTourToBooked);
 exports.default = toursRoutes;
