@@ -116,7 +116,9 @@ export const getUserById=async(req:Request,res:Response)=>{
     try {
 
         let{id}=req.params
-        let user:IUser=await (await dbConnection.exec('getUserById', { id })).recordset[0];
+    
+        let user:IUser[]=await (await dbConnection.exec('getUserById', { id })).recordset;
+        console.log(user)
         if(!user){return  res.status(404).json({message:"no user found with the id "})}
         return res.status(200).json(user)
         
@@ -136,3 +138,39 @@ export const checkUserDetails = async (req:IExtendedUserRequest, res:Response)=>
     }
     
 }
+
+export const updateUser =async(req:IExtendedUserRequest,res:Response)=>{
+    try {
+
+        let {id}=req.params
+        console.log("params id",id)
+           const existingUser= await getUserByIdHelper(id);
+        console.log(existingUser)
+        if (!existingUser) {
+            return res.status(404).json({ message: "No user found with the id" });
+        }
+
+        let {email,password}=req.body;
+        password=await bcrypt.hash(password,10);
+        console.log("hey i am an upodate controller")
+        let result=await dbConnection.exec('updateUser',{id,email,password});
+        console.log(result)
+
+        return res.status(200).json({message:"user updated successfully"})
+              
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message:"error in updating the user"})
+    }
+}
+
+const getUserByIdHelper = async (id: string): Promise<IUser | null> => {
+    try {
+        const user: IUser = await (await dbConnection.exec('getUserById', { id })).recordset[0];
+        return user;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+

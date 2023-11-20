@@ -6,6 +6,8 @@ const toursRoutes = (0, express_1.Router)();
 toursRoutes.get('/all', toursControllers_1.getAllTours);
 toursRoutes.post('/create', toursControllers_1.createNewTour);
 toursRoutes.get('/user/:userID', toursControllers_1.getToursByUser);
+toursRoutes.get("/search/:tourType", toursControllers_1.getTourBySearch);
 toursRoutes.delete('/tours/:id', toursControllers_1.deleteTour);
 toursRoutes.post("/book/:id/:userID", toursControllers_1.updateTourToBooked);
+toursRoutes.get("/search/:tourType", toursControllers_1.getTourBySearch);
 exports.default = toursRoutes;

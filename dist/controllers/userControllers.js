@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUserDetails = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
+exports.updateUser = exports.checkUserDetails = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -97,7 +97,8 @@ exports.getAllUsers = getAllUsers;
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { id } = req.params;
-        let user = yield (yield dbConnection.exec('getUserById', { id })).recordset[0];
+        let user = yield (yield dbConnection.exec('getUserById', { id })).recordset;
+        console.log(user);
         if (!user) {
             return res.status(404).json({ message: "no user found with the id " });
         }
@@ -116,3 +117,35 @@ const checkUserDetails = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.checkUserDetails = checkUserDetails;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { id } = req.params;
+        console.log("params id", id);
+        const existingUser = yield getUserByIdHelper(id);
+        console.log(existingUser);
+        if (!existingUser) {
+            return res.status(404).json({ message: "No user found with the id" });
+        }
+        let { email, password } = req.body;
+        password = yield bcrypt_1.default.hash(password, 10);
+        console.log("hey i am an upodate controller");
+        let result = yield dbConnection.exec('updateUser', { id, email, password });
+        console.log(result);
+        return res.status(200).json({ message: "user updated successfully" });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "error in updating the user" });
+    }
+});
+exports.updateUser = updateUser;
+const getUserByIdHelper = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield (yield dbConnection.exec('getUserById', { id })).recordset[0];
+        return user;
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+});

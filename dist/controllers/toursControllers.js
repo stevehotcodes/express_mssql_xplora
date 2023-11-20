@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getToursByUser = exports.updateTourToBooked = exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
+exports.getTourBySearch = exports.getToursByUser = exports.updateTourToBooked = exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const db = dbConnectionHelper_1.default.getInstance();
@@ -87,3 +87,19 @@ const getToursByUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getToursByUser = getToursByUser;
+const getTourBySearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { tourType } = req.params;
+        let events = (yield db.exec('getTourTypesBy', { tourType })).recordset;
+        console.log(events);
+        if (!events) {
+            return res.status(404).json({ message: "no events found" });
+        }
+        return res.status(200).json(events);
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "error in searching tours" });
+    }
+});
+exports.getTourBySearch = getTourBySearch;

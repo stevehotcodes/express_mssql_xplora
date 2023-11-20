@@ -115,3 +115,22 @@ export const getToursByUser=async(req:Request,res:Response)=>{
         
     }
 }
+
+export const getTourBySearch=async(req:Request,res:Response)=>{
+    try{
+
+    
+
+        let{tourType}=req.params
+        let events=(await db.exec('getTourTypesBy',{tourType})).recordset
+        console.log(events);
+          if(!events){return res.status(404).json({message:"no events found"})}
+        return res.status(200).json(events)
+
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({message:"error in searching tours"})
+    }
+}
+
