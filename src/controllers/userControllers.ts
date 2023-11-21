@@ -174,3 +174,11 @@ const getUserByIdHelper = async (id: string): Promise<IUser | null> => {
     }
 };
 
+export  const reactivateUser=async(req:Request,res:Response)=>{
+    try {
+        
+        
+    } catch (error) {
+        
+    }
+}

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.checkUserDetails = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
+exports.reactivateUser = exports.updateUser = exports.checkUserDetails = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -149,3 +149,10 @@ const getUserByIdHelper = (id) => __awaiter(void 0, void 0, void 0, function* ()
         return null;
     }
 });
+const reactivateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) {
+    }
+});
+exports.reactivateUser = reactivateUser;

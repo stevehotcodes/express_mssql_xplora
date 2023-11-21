@@ -10,7 +10,7 @@ userRoutes.get("/all",getAllUsers)
 userRoutes.get("/one/:id",getUserById)
 userRoutes.post('/signup', registerNewUser);
 userRoutes.post('/signin',loginUser);
-userRoutes.put("/update/:id", verifyToken,updateUser)
+userRoutes.post("/update/:id",updateUser)
 userRoutes.delete('/users/:id',deleteUser)
 
 

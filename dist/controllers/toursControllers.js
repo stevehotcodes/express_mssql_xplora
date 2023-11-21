@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTourBySearch = exports.getToursByUser = exports.updateTourToBooked = exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
+exports.updateTourDetails = exports.getTourById = exports.getTourBySearch = exports.getToursByUser = exports.updateTourToBooked = exports.deleteTour = exports.getAllTours = exports.createNewTour = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
 const db = dbConnectionHelper_1.default.getInstance();
 const createNewTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let id = (0, uuid_1.v4)();
-        let { title, tourType, destination, price, availableDate, image, duration } = req.body;
+        let { title, tourType, destination, price, availableDate, image, duration, slots } = req.body;
         availableDate = new Date();
         availableDate = availableDate.toJSON();
-        let data = { id, title, tourType, destination, price, availableDate, image, duration };
+        let data = { id, title, tourType, destination, price, availableDate, image, duration, slots };
         yield db.exec('createNewTour', data);
         return res.status(201).json({ message: `Tour created has been registered successfully. The ID is ${id}` });
     }
@@ -103,3 +103,54 @@ const getTourBySearch = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getTourBySearch = getTourBySearch;
+const getTourById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        let event = yield (yield db.exec('getTourById', { id })).recordset;
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+        console.log("get tour by id results", event);
+        return res.status(200).json(event);
+    }
+    catch (error) {
+        return res.status(500).json({ message: "error in fetching event", error });
+    }
+});
+exports.getTourById = getTourById;
+const updateTourDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { id } = req.params;
+        // const existingEvent=await getTourByIdHelper(id)
+        //  console.log("this is existing event",existingEvent);
+        //  if(!existingEvent){return res.status(404).json({message:"event not found"})}
+        let { title, tourType, destination, price, availableDate, image, slots, duration } = req.body;
+        let result = yield db.exec('updateTourDetails', { id, title, tourType, destination, price, availableDate, image, slots, duration });
+        console.log(result);
+        return res.status(200).json({ message: `event with the ${id} updated successfully` });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+});
+exports.updateTourDetails = updateTourDetails;
+const getTourByIdHelper = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const event = yield (yield db.exec('getUserById', { id })).recordset[0];
+        return event;
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+});
+//  @id VARCHAR(255),
+//  @title VARCHAR(255),
+//  @tourType VARCHAR (255) ,
+//  @destination VARCHAR(255), 
+//  @price VARCHAR (255),
+//  @availableDate VARCHAR (255),
+//  @image VARCHAR (255),
+//  @slots VARCHAR (255),
+//  @duration VARCHAR(255)

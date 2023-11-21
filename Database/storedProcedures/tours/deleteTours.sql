@@ -6,4 +6,5 @@ BEGIN
     UPDATE tours
     SET isDeleted=1
     WHERE isDeleted=0 AND id=@id
+    
 END
