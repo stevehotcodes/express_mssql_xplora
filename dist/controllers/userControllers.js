@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.reactivateUser = exports.updateUser = exports.checkUserDetails = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.loginUser = exports.registerNewUser = void 0;
 const dbConnectionHelper_1 = __importDefault(require("../helpers/dbConnectionHelper"));
 const uuid_1 = require("uuid");
+const validators_1 = require("../helpers/validators");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -24,10 +25,10 @@ const registerNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         let id = (0, uuid_1.v4)();
         let { fullName, email, password } = req.body;
-        // const{error}=registrationSchema.validate(req.body);
-        // if(error){
-        //     return res.status(406).json({error:error.details[0].message})
-        // }
+        const { error } = validators_1.registrationSchema.validate(req.body);
+        if (error) {
+            return res.status(406).json({ error: error.details[0].message });
+        }
         password = yield bcrypt_1.default.hash(password, 10);
         yield dbConnection.exec('createNewUser', { id, fullName, email, password });
         return res.status(201).json({ message: `User <${email}> has been registered successfully. Your ID is ${id}` });
@@ -50,7 +51,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const passwordDb = yield bcrypt_1.default.compare(password, user.password);
             console.log(passwordDb, user.email, password, user.password);
             if (!passwordDb) {
-                return res.status(401).json("Incorrect credential for the user");
+                return res.status(401).json({ message: "Incorrect credential for the user" });
             }
             const userPayload = { 'id': user.id, 'fullname': user.fullName, 'email': user.email, 'role': user.role };
             const token = jsonwebtoken_1.default.sign(userPayload, process.env.SECRET, {

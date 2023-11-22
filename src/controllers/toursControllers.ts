@@ -159,7 +159,7 @@ export const getTourBySearch=async(req:Request,res:Response)=>{
         let{title,tourType,destination,price,availableDate,image,slots,duration}=req.body
          let result=await db.exec('updateTourDetails',{id,title,tourType,destination,price,availableDate,image,slots,duration});
          console.log(result)
-         return res.status(200).json({message:`event with the ${id} updated successfully`})
+         return res.status(200).json({message:` ${title} updated successfully`})
         
     } catch (error) {
         

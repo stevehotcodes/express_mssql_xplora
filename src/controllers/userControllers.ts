@@ -31,11 +31,11 @@ export const registerNewUser=async(req:Request,res:Response)=>{
     try {
         let id =uid()
         let {fullName,email,password}=req.body
-        // const{error}=registrationSchema.validate(req.body);
+        const{error}=registrationSchema.validate(req.body);
         
-        // if(error){
-        //     return res.status(406).json({error:error.details[0].message})
-        // }
+        if(error){
+            return res.status(406).json({error:error.details[0].message})
+        }
         password=await bcrypt.hash(password,10);
         
         await dbConnection.exec('createNewUser',{id,fullName,email,password})
@@ -64,7 +64,7 @@ export const loginUser =async (req:Request,res:Response)=>{
             const passwordDb=await bcrypt.compare(password as string,user.password as string)
             console.log(passwordDb,user.email,password,user.password)
             if(!passwordDb){
-                return res.status(401).json("Incorrect credential for the user")
+                return res.status(401).json({message:"Incorrect credential for the user"})
             }
 
             const userPayload= {'id': user.id, 'fullname':user.fullName, 'email':user.email, 'role':user.role} 

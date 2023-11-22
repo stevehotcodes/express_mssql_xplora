@@ -127,7 +127,7 @@ const updateTourDetails = (req, res) => __awaiter(void 0, void 0, void 0, functi
         let { title, tourType, destination, price, availableDate, image, slots, duration } = req.body;
         let result = yield db.exec('updateTourDetails', { id, title, tourType, destination, price, availableDate, image, slots, duration });
         console.log(result);
-        return res.status(200).json({ message: `event with the ${id} updated successfully` });
+        return res.status(200).json({ message: ` ${title} updated successfully` });
     }
     catch (error) {
         console.log(error);
